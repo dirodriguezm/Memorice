@@ -1,3 +1,17 @@
 <resources>
     <string name="app_name">Memorice</string>
+    <string name="nuevo">Nuevo Juego</string>
+    <string name="continuar">Continuar ></string>
+    <string name="elija_tablero">Elija Tablero</string>
+    <string name="cuatroxseis">4 x 6</string>
+    <string name="cincoxseis">5 x 6</string>
+    <string name="seisxseis">6 x 6</string>
+    <string name="sietexseis">7 x 6</string>
+    <string name="continuar_juego_titulo">Continuar Juego</string>
+    <string name="saved_games">saved_games</string>
+    <string name="files">files_save_games</string>
+    <string name="saved_files">saved_files</string>
+    <string name="nombre">Memorice</string>
+    <string name="titulo_nuevo_juegp">NUEVO JUEGO</string>
+    <string name="creditos">CREDITOS</string>
 </resources>
