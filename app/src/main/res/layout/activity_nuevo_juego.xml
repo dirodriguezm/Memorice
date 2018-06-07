@@ -1,95 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="8dp"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="12dp"
     tools:context=".NuevoJuegoActivity">
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
+        android:id="@+id/titulo_nuevo_juego"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Tamaño Tablero"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+        android:text="@string/titulo_nuevo_juegp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button.Big"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <RadioGroup
-        android:id="@+id/tableros"
+    <LinearLayout
+        android:id="@+id/tamaño"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
+        android:layout_height="120dp"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/layout_margin_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/titulo_nuevo_juego"
+        >
 
-        <RadioButton
-            android:id="@+id/cuatroXseis"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/titulo_tamaño"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cuatroxseis"
-            android:checked="true"/>
+            android:gravity="center"
+            android:text="Tamaño Tablero"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
-        <RadioButton
-            android:id="@+id/cincoXseis"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cincoxseis" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <RadioButton
-            android:id="@+id/seisXseis"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/seisxseis" />
+            <Button
+                android:id="@+id/button_tamaño1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/cuatroxseis"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button.Big"
+                android:layout_margin="@dimen/button_margin"/>
 
-    </RadioGroup>
+            <Button
+                android:id="@+id/button_tamaño2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/button_margin"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button.Big"
+                android:text="@string/cincoxseis" />
 
-    <TextView
-        android:id="@+id/textView3"
+            <Button
+                android:id="@+id/button_tamaño3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/button_margin"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button.Big"
+                android:text="@string/seisxseis" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dificultad"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Dificultad"
-        android:textAppearance="@style/TextAppearance.AppCompat.Button" />
+        android:layout_height="120dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/layout_margin_top"
+        app:layout_constraintTop_toBottomOf="@id/tamaño">
 
-    <RadioGroup
-        android:id="@+id/tiempos"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
-
-        <RadioButton
-            android:id="@+id/unMin"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/titulo_dificultad"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="1 minuto"
-            android:checked="true"/>
+            android:gravity="center"
+            android:text="Tiempo"
+            android:textAppearance="@style/TextAppearance.AppCompat.Button" />
 
-        <RadioButton
-            android:id="@+id/dosMin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="2 minutos" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
 
-        <RadioButton
-            android:id="@+id/tresMin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="3 minutos" />
+            android:orientation="horizontal">
 
-    </RadioGroup>
+            <Button
+                android:id="@+id/button_dificultad1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/button_margin"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button.Big"
+                android:text="1 min" />
+
+            <Button
+                android:id="@+id/button_dificultad2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/button_margin"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button.Big"
+                android:text="2 min" />
+
+            <Button
+                android:id="@+id/button_dificultad3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/button_margin"
+                android:textAppearance="@style/TextAppearance.AppCompat.Button.Big"
+                android:text="3 min" />
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
-        android:id="@+id/button_siguiente"
+        android:id="@+id/button_comenzar"
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Siguiente" />
-</LinearLayout>
+        android:text="Comenzar"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button.Colored.Big"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</android.support.constraint.ConstraintLayout>

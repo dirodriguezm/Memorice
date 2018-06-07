@@ -16,9 +16,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NuevoJuegoActivity"
-            android:theme="@style/AppTheme"
-            android:label="@string/titulo_nuevo_juegp" />
+        <activity android:name=".NuevoJuegoActivity"/>
         <activity android:name=".ContinuarJuegoActivity" />
         <activity android:name=".CreditsActivity"
             android:theme="@style/AppTheme">
