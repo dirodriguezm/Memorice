@@ -22,6 +22,7 @@
             android:theme="@style/AppTheme">
 
         </activity>
+        <activity android:name=".TableroActivity"></activity>
     </application>
 
 </manifest>
