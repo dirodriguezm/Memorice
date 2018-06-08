@@ -6,19 +6,32 @@
     android:layout_height="match_parent"
     android:descendantFocusability="blocksDescendants"
     android:theme="@style/AppTheme"
+    android:padding="12dp"
     tools:context=".TableroActivity">
+
+    <TextView
+        android:id="@+id/tiempo"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tiempo"
+        android:textAppearance="@style/TextAppearance.AppCompat.Button.Big"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <GridView xmlns:android="http://schemas.android.com/apk/res/android"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tiempo"
         android:id="@+id/gridview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="10dp"
+        android:layout_height="wrap_content"
+        android:columnWidth="5dp"
         android:gravity="center"
-        android:horizontalSpacing="10dp"
-        android:numColumns="4"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp" />
+        android:horizontalSpacing="5dp"
+        android:verticalSpacing="5dp" />
 
 
 </android.support.constraint.ConstraintLayout>

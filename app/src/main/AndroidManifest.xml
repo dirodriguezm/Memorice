@@ -16,13 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NuevoJuegoActivity"/>
+        <activity android:name=".NuevoJuegoActivity" />
         <activity android:name=".ContinuarJuegoActivity" />
-        <activity android:name=".CreditsActivity"
-            android:theme="@style/AppTheme">
-
-        </activity>
-        <activity android:name=".TableroActivity"></activity>
+        <activity
+            android:name=".CreditsActivity"
+            android:theme="@style/AppTheme"></activity>
+        <activity android:name=".TableroActivity" />
+        <activity android:name=".FinJuegoActivity"></activity>
     </application>
 
 </manifest>

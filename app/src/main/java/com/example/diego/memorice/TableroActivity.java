@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,12 +27,46 @@ import java.util.Set;
 public class TableroActivity extends AppCompatActivity  {
     private int board_size, ancho, alto, remaining;
     private ArrayList<Card> cards, pressed_cards;
+    private TextView timer;
+    private int seconds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tablero);
         boolean continuar = false;
+        timer = (TextView) findViewById(R.id.tiempo);
+
+        Intent intent = getIntent();
+
+        int col = intent.getIntExtra("col", 4);
+        int tiempo = intent.getIntExtra("tiempo", 1);
+
+        int millis = 1000 * 60 * tiempo;
+
+        new CountDownTimer(millis, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                seconds = (int) (millisUntilFinished / 1000);
+                String secondsStr = secondsToString(seconds);
+                timer.setText(secondsStr);
+            }
+
+            public void onFinish() {
+                Intent intent = new Intent(TableroActivity.this,FinJuegoActivity.class);
+                String tiempo = (String) timer.getText();
+                int pares = ((board_size / 2) - remaining);
+                int puntaje = seconds * 10 + pares * 20;
+
+                intent.putExtra("tiempo", tiempo);
+                intent.putExtra("pares", String.valueOf(pares));
+                intent.putExtra("puntaje", String.valueOf(puntaje));
+
+                startActivity(intent);
+            }
+        }.start();
+
+
         if(continuar){
             String date = "";
             SharedPreferences sp = getSharedPreferences(date, Context.MODE_PRIVATE);
@@ -43,7 +79,7 @@ public class TableroActivity extends AppCompatActivity  {
             this.pressed_cards = createContinuedPressedCards(cards);
         }
         else {
-            this.ancho = 4;
+            this.ancho = col;
             this.alto = 6;
             this.board_size = ancho * alto;
             this.cards = createCardsArray(board_size);
@@ -93,7 +129,15 @@ public class TableroActivity extends AppCompatActivity  {
                                     remaining--;
                                 }
                                 if(remaining == 0){
-                                    Intent intent = new Intent(TableroActivity.this,MainActivity.class);
+                                    Intent intent = new Intent(TableroActivity.this,FinJuegoActivity.class);
+                                    String tiempo = (String) timer.getText();
+                                    int puntaje = seconds * 10 + ((board_size / 2) - remaining) * 20;
+                                    int pares = (board_size / 2);
+
+                                    intent.putExtra("tiempo", tiempo);
+                                    intent.putExtra("pares", String.valueOf(pares));
+                                    intent.putExtra("puntaje", String.valueOf(puntaje));
+
                                     startActivity(intent);
                                 }
                             }
@@ -118,6 +162,10 @@ public class TableroActivity extends AppCompatActivity  {
             }
         });
 
+    }
+
+    private String secondsToString(int pTime) {
+        return String.format("%02d:%02d", pTime / 60, pTime % 60);
     }
 
 
@@ -215,6 +263,7 @@ public class TableroActivity extends AppCompatActivity  {
             }
             if( c[i].equals("true")){
                 card.complete();
+                
             }
         }
         return cards;

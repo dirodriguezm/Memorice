@@ -30,7 +30,7 @@ public class NuevoJuegoActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nuevo_juego);
 
-        intent = new Intent(this, CreditsActivity.class);
+        intent = new Intent(this, TableroActivity.class);
 
         for(int i = 0; i < buttonsTab.length; i++){
             buttonsTab[i] = (Button) findViewById(buttonsIdsTab[i]);
