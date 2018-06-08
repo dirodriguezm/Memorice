@@ -41,6 +41,7 @@ public class Card extends android.support.v7.widget.AppCompatImageView{
 
     public void complete(){
         this.completed = true;
+        this.pressed = false;
         //this.resource = R.drawable.completed;
         //this.setImageResource(this.resource);
         this.setVisibility(INVISIBLE);

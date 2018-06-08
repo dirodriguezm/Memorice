@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -29,61 +30,69 @@ public class TableroActivity extends AppCompatActivity  {
     private ArrayList<Card> cards, pressed_cards;
     private TextView timer;
     private int seconds;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tablero);
-        boolean continuar = false;
+
         timer = (TextView) findViewById(R.id.tiempo);
 
         Intent intent = getIntent();
-
-        int col = intent.getIntExtra("col", 4);
-        int tiempo = intent.getIntExtra("tiempo", 1);
-
-        int millis = 1000 * 60 * tiempo;
-
-        new CountDownTimer(millis, 1000) {
-
-            public void onTick(long millisUntilFinished) {
-                seconds = (int) (millisUntilFinished / 1000);
-                String secondsStr = secondsToString(seconds);
-                timer.setText(secondsStr);
-            }
-
-            public void onFinish() {
-                Intent intent = new Intent(TableroActivity.this,FinJuegoActivity.class);
-                String tiempo = (String) timer.getText();
-                int pares = ((board_size / 2) - remaining);
-                int puntaje = seconds * 10 + pares * 20;
-
-                intent.putExtra("tiempo", tiempo);
-                intent.putExtra("pares", String.valueOf(pares));
-                intent.putExtra("puntaje", String.valueOf(puntaje));
-
-                startActivity(intent);
-            }
-        }.start();
+        this.date = ""+new Date();
+        boolean continuar = intent.getBooleanExtra("continuar",false); //recibo continuar, si es falso inicializa de 0
 
 
-        if(continuar){
-            String date = "";
-            SharedPreferences sp = getSharedPreferences(date, Context.MODE_PRIVATE);
-            this.ancho = sp.getInt("ancho",0);
-            this.alto = sp.getInt("alto",0);
+
+        if(continuar){ // si venimos de la ContinuarJuegoActivity
+            this.date = intent.getStringExtra("date"); //recibo la fecha
+            SharedPreferences sp = getSharedPreferences(this.date, Context.MODE_PRIVATE);
+            this.ancho = sp.getInt("ancho",0); //obtengo el ancho del juego guardado
+            this.alto = sp.getInt("alto",0); // obtengo el alto del juego guardado este no importa porque abajo se pone siempre como 6
+            String text = sp.getString("tiempo", ""); // obtengo el tiempo en que fue guardado
+            this.timer.setText(text); // le pongo el tiempo al timer pero aun no está el codigo que inicia el contador
             this.board_size = ancho * alto;
-            this.cards = createContinuedCards(sp.getStringSet("resources", new HashSet<String>()),
-                    sp.getStringSet("pressed",new HashSet<String>()),
-                    sp.getStringSet("completed",new HashSet<String>()));
-            this.pressed_cards = createContinuedPressedCards(cards);
+            //a partir de los datos guardados inicializo las cartas en el orden que estaban y si estaban presionadas o completadas
+            this.cards = createContinuedCards(sp.getString("resources",""),
+                    sp.getString("pressed",""),
+                    sp.getString("completed",""));
+
+            this.pressed_cards = createContinuedPressedCards(cards); // lo mismo pero guardo las que estan presionadas en arreglo
+            Log.i("CONTINUE",""+this.pressed_cards.size()); //datos obtenidos bien
         }
-        else {
-            this.ancho = col;
+        else { // cuando venimos de NuevoJuegoActivity
+            this.ancho = intent.getIntExtra("col", 4); // obtenemos el ancho del tablero
+            int tiempo = intent.getIntExtra("tiempo", 1);
             this.alto = 6;
             this.board_size = ancho * alto;
-            this.cards = createCardsArray(board_size);
+            int millis = 1000 * 60 * tiempo;
+
+            new CountDownTimer(millis, 1000) {
+
+                public void onTick(long millisUntilFinished) {
+                    seconds = (int) (millisUntilFinished / 1000);
+                    String secondsStr = secondsToString(seconds);
+                    timer.setText(secondsStr);
+                }
+
+                public void onFinish() {
+                    Intent intent = new Intent(TableroActivity.this,FinJuegoActivity.class);
+                    String tiempo = (String) timer.getText();
+                    int pares = ((board_size / 2) - remaining);
+                    int puntaje = seconds * 10 + pares * 20; // bacan jaja
+
+                    intent.putExtra("tiempo", tiempo);
+                    intent.putExtra("pares", String.valueOf(pares));
+                    intent.putExtra("puntaje", String.valueOf(puntaje));
+
+                    startActivity(intent);
+                }
+            }.start();
+
+            this.cards = createCardsArray(board_size); //inicializamos las cartas
             this.pressed_cards = new ArrayList<>();
+            //este ciclo for es para ordenar las cartas aleatoriamente
             Random random = new Random();
             for (int i = 0; i < board_size; i++) {
                 int r = random.nextInt(board_size);
@@ -93,11 +102,9 @@ public class TableroActivity extends AppCompatActivity  {
             }
         }
         this.remaining = this.board_size / 2;
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
         GridView gridview = findViewById(R.id.gridview);
         gridview.setNumColumns(ancho);
-        TableroAdapter adapter = new TableroAdapter(this, cards);
+        TableroAdapter adapter = new TableroAdapter(this, this.cards);
         gridview.setAdapter(adapter);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -112,9 +119,9 @@ public class TableroActivity extends AppCompatActivity  {
                         pressed_cards = new ArrayList<>();
                     }
                 }
-                if (pressed_cards.size() == 2) {
+                if (pressed_cards.size() == 2) { //si se dio vuelta un par
 
-                    if (pressed_cards.get(0).getResource() == pressed_cards.get(1).getResource()) {
+                    if (pressed_cards.get(0).getResource() == pressed_cards.get(1).getResource()) { //si son iguales
                         new CountDownTimer(1000,1){
                             @Override
                             public void onTick(long millisUntilFinished) {
@@ -127,6 +134,7 @@ public class TableroActivity extends AppCompatActivity  {
                                     pressed_cards.get(1).complete();
                                     pressed_cards = new ArrayList<>();
                                     remaining--;
+                                    saveState(date); // cada vez que se encuentra un par se llama a saveState
                                 }
                                 if(remaining == 0){
                                     Intent intent = new Intent(TableroActivity.this,FinJuegoActivity.class);
@@ -142,7 +150,7 @@ public class TableroActivity extends AppCompatActivity  {
                                 }
                             }
                         }.start();
-                    } else {
+                    } else { //si no son iguales
                         new CountDownTimer(1000,1){
                             @Override
                             public void onTick(long millisUntilFinished) {
@@ -151,7 +159,7 @@ public class TableroActivity extends AppCompatActivity  {
                             @Override
                             public void onFinish() {
                                 for(Card card: pressed_cards){
-                                    card.press();
+                                    card.press(); //las damos vuelta de nuevo
                                 }
                                 pressed_cards = new ArrayList<>();
 
@@ -229,6 +237,11 @@ public class TableroActivity extends AppCompatActivity  {
         return resources;
     }
 
+    /**
+     * Inicializa las cartas dependiendo el tamaño de la pantalla y le asigna el resource de imagen
+     * @param board_size tamaño del grid
+     * @return arreglo con las cartas inicializadas
+     */
     ArrayList<Card> createCardsArray(int board_size){
         ArrayList<Card> cards = new ArrayList<>();
         Integer[] resources = createResourcesArray();
@@ -250,25 +263,41 @@ public class TableroActivity extends AppCompatActivity  {
         return cards;
     }
 
-    ArrayList<Card> createContinuedCards(Set<String> resources, Set<String> pressed, Set<String> completed){
+    /**
+     * Inicializa las cartas pero con los valores del sharedpreference. Los arreglos están en formato string,
+     * entonces hay que pasarlos a un array llamando a la funcion Arrays.asList()
+     * @param resources Arreglo de los resources de todas las cartas pero en string, obtenido desde sharedpreference
+     *                  Ej: [213109944, 213110943, ...] los numeros son el resource
+     * @param pressed Arreglo de cartas presionadas EJ: [false, false, true, false, false, ... ]
+     * @param completed Arreglo de cartas completadas Ej: [false, false, true, true, false, false, ...]
+     * @return
+     */
+    ArrayList<Card> createContinuedCards(String resources, String pressed, String completed){
         ArrayList<Card> cards = new ArrayList<>();
-        Object[] r = resources.toArray();
-        Object[] p = pressed.toArray();
-        Object[] c = completed.toArray();
+        List<String> r = new ArrayList<>(Arrays.asList(resources.split(",")));
+        List<String> p = new ArrayList<>(Arrays.asList(pressed.split(",")));
+        List<String> c = new ArrayList<>(Arrays.asList(completed.split(",")));
         int i = 0;
-        for (String resource: resources) {
+        for (String resource: r) {
+            Log.i("CONTINUANDO",resource);
             Card card = new Card(this, Integer.parseInt(resource));
-            if( p[i].equals("true")){
+            if( p.get(i).equals("true")){
                 card.press();
             }
-            if( c[i].equals("true")){
+            if( c.get(i).equals("true")){
                 card.complete();
-                
             }
+            cards.add(card);
+            i++;
         }
         return cards;
     }
 
+    /**
+     * Guarda en arreglo las cartas presionadas.
+     * @param cards Arreglo de cartas una vez inicializadas.
+     * @return
+     */
     ArrayList<Card> createContinuedPressedCards(ArrayList<Card> cards){
         ArrayList<Card> pressedCards = new ArrayList<>();
         for (Card card : cards){
@@ -287,48 +316,69 @@ public class TableroActivity extends AppCompatActivity  {
         Log.i("card", array + " size : " + pressed_cards.size());
     }
 
-    Set<String> getCardResources(){
-        Set<String> set = new HashSet<>();
+    /**
+     * Transforma el arreglo de cartas a string
+     * @return El arreglo de resources en forma de string
+     */
+    String getCardResources(){
+        StringBuilder sb = new StringBuilder();
         for(Card card: this.cards){
-            set.add("" + card.getResource());
+            sb.append(card.getResource());
+            sb.append(",");
         }
-        return set;
+        return sb.toString();
     }
 
-    Set<String> getPressedCards(){
-        Set<String> set = new HashSet<>();
+    /**
+     * Transforma el arreglo de cartas a string
+     * @return El arreglo de cartas presionadas en forma de string
+     */
+    String getPressedCards(){
+        StringBuilder sb = new StringBuilder();
         for(Card card: this.cards){
-            set.add("" + card.isPressed());
+            sb.append(card.isPressed());
+            sb.append(",");
         }
-        return set;
+        return sb.toString();
     }
 
-    Set<String> getCompletedCards(){
-        Set<String> set = new HashSet<>();
+    /**
+     * Transforma el arreglo de cartas a string
+     * @return El arreglo de cartas completadas en forma de string
+     */
+    String getCompletedCards(){
+        StringBuilder sb = new StringBuilder();
         for(Card card: this.cards){
-            set.add("" + card.isCompleted());
+            sb.append(card.isCompleted());
+            sb.append(",");
         }
-        return set;
+        return sb.toString();
     }
 
 
-    void saveState(ArrayList<Card> cards){
+    /**
+     * Guarda en sharedpreference el estado del juego
+     * @param date el nombre del archivo que se va a guardas, es la fecha del juego.
+     */
+    void saveState(String date){
 
         SharedPreferences sp = this.getSharedPreferences("Juegos", Context.MODE_PRIVATE);
         Set<String> def = new HashSet<>();
         Set<String> archivos = sp.getStringSet("archivos", def);
-        Date date = new Date();
         archivos.add(""+date);
         SharedPreferences.Editor editor = sp.edit();
         editor.putStringSet("archivos",archivos);
         editor.commit();
         sp = this.getSharedPreferences("" + date, Context.MODE_PRIVATE);
         editor = sp.edit();
-        editor.putStringSet("resources",getCardResources());
-        editor.putStringSet("pressed",getPressedCards());
-        editor.putStringSet("completed",getCompletedCards());
+        Log.i("SAVE", date);
+        editor.putString("resources",getCardResources());
+        editor.putString("pressed",getPressedCards());
+        editor.putString("completed",getCompletedCards());
         editor.putInt("alto",this.alto);
         editor.putInt("ancho",this.ancho);
+        Log.i("SAVED", ""+this.ancho);
+        editor.putString("tiempo",this.timer.getText().toString());
         editor.commit();
 
     }

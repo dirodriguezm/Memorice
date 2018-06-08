@@ -41,7 +41,14 @@ class TableroAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final Card card = this.cards.get(position);
+        Card card;
+        if (convertView == null) {
+            card = this.cards.get(position);
+            Log.i("CREANDO", "" + card.getResource());
+        }
+        else{
+            card = (Card) convertView;
+        }
         return card;
     }
 

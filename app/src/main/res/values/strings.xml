@@ -8,9 +8,9 @@
     <string name="seisxseis">6 x 6</string>
     <string name="sietexseis">7 x 6</string>
     <string name="continuar_juego_titulo">Continuar Juego</string>
-    <string name="saved_games">saved_games</string>
+    <string name="saved_games">Juegos</string>
     <string name="files">files_save_games</string>
-    <string name="saved_files">saved_files</string>
+    <string name="saved_files">archivos</string>
     <string name="nombre">Memorice</string>
     <string name="titulo_nuevo_juegp">NUEVO JUEGO</string>
     <string name="creditos">CREDITOS</string>
